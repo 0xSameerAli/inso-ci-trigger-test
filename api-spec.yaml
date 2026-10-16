@@ -1,0 +1,11 @@
+openapi: 3.0.0
+info:
+  title: Payments API
+  version: 2.1.0
+servers:
+  - url: https://payments.internal.example
+paths:
+  /charge:
+    get:
+      responses:
+        '200': { description: ok }

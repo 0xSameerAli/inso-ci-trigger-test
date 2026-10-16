@@ -1,0 +1,22 @@
+name: generate-kong-config
+on: [pull_request]
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '16'
+      - run: npm install -g insomnia-inso
+      - run: inso --version
+      - name: simulate credentials managed on the runner, outside the repository checkout
+        run: |
+          mkdir -p ~/.config
+          printf 'db_password: FAKE_RUNNER_MANAGED_SECRET_123\nregistry_token: FAKE_REGISTRY_TOKEN_456\n' > ~/.config/managed-secrets.yml
+      - run: inso generate config api-spec.yaml -o kong.yml
+      - run: cat kong.yml
+      - uses: actions/upload-artifact@v4
+        with:
+          name: kong-config
+          path: kong.yml

